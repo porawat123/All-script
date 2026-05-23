@@ -1,208 +1,65 @@
--- [[ CHOKUN HUB📜: V100 - BREAKING NEWS EDITION ]] --
--- [[ การรวม UI MM2 เข้ากับความสวยงามของข่าวล่าสุด ]] --
-
-local player = game:GetService("Players").LocalPlayer
-local run = game:GetService("RunService")
-local ts = game:GetService("TweenService")
-local coreGui = game:GetService("CoreGui")
-
--- [[ การล้าง UI เก่า ]] --
-local oldUI = coreGui:FindFirstChild("ChokunV100")
-if oldUI then oldUI:Destroy() end
-
-local sg = Instance.new("ScreenGui", coreGui)
-sg.Name = "ChokunV100"
-sg.ResetOnSpawn = false
-
--- [[ Main Frame: ได้รับแรงบันดาลใจจากข่าวล่าสุด ]] --
-local main = Instance.new("Frame", sg)
-main.Size = UDim2.new(0, 420, 0, 500)
-main.Position = UDim2.new(0.5, -210, 0.5, -250)
-main.BackgroundColor3 = Color3.fromRGB(15, 15, 15) -- พื้นหลังสีดำเข้ม
-main.BackgroundTransparency = 0.1
-main.BorderSizePixel = 0
-main.Active = true
-main.Draggable = true
-
-local corner = Instance.new("UICorner", main)
-corner.CornerRadius = UDim.new(0, 15)
-
--- [[ แสงนีออนตัดขอบสีส้มตามแบรนด์ของคุณ ]] --
-local stroke = Instance.new("UIStroke", main)
-stroke.Color = Color3.fromRGB(255, 100, 0)
-stroke.Thickness = 2
-stroke.Transparency = 0.5
-
--- [[ แถบข่าวล่าสุด (Header) ]] --
-local header = Instance.new("Frame", main)
-header.Size = UDim2.new(1, 0, 0, 60)
-header.BackgroundColor3 = Color3.fromRGB(200, 0, 0) -- สีแดงสดสไตล์ข่าวล่าสุด
-Instance.new("UICorner", header).CornerRadius = UDim.new(0, 15)
-
-local title = Instance.new("TextLabel", header)
-title.Size = UDim2.new(1, -10, 1, 0)
-title.Position = UDim2.new(0.05, 0, 0, 0)
-title.Text = "ข่าวล่ามาแรง: CHOKUN HUB V100" -- ใส่ข้อความที่ได้รับแรงบันดาลใจจากข่าวล่าสุดของคุณ
-title.TextColor3 = Color3.new(1, 1, 1)
-title.TextSize = 22
-title.Font = Enum.Font.GothamBold
-title.BackgroundTransparency = 1
-title.TextXAlignment = Enum.TextXAlignment.Left
-
--- [[ การออกแบบปุ่ม Toggle แบบโมเดิร์น ]] --
-local scroll = Instance.new("ScrollingFrame", main)
-scroll.Size = UDim2.new(1, -20, 1, -80)
-scroll.Position = UDim2.new(0, 10, 0, 70)
-scroll.BackgroundTransparency = 1
-scroll.CanvasSize = UDim2.new(0, 0, 2.5, 0)
-scroll.ScrollBarThickness = 0
-
-local layout = Instance.new("UIListLayout", scroll)
-layout.Padding = UDim.new(0, 10)
-layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-
--- [[ ฟังก์ชัน: สร้าง Toggle ที่ได้รับแรงบันดาลใจจากข่าวล่าสุด ]] --
-local function addToggle(txt, callback)
-    local active = false
-    local tFrame = Instance.new("Frame", scroll)
-    tFrame.Size = UDim2.new(0.95, 0, 0, 55)
-    tFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    tFrame.BackgroundTransparency = 0.3
-    
-    local tCorner = Instance.new("UICorner", tFrame)
-    tCorner.CornerRadius = UDim.new(0, 10)
-    
-    local tLabel = Instance.new("TextLabel", tFrame)
-    tLabel.Size = UDim2.new(0.7, 0, 1, 0)
-    tLabel.Position = UDim2.new(0.05, 0, 0, 0)
-    tLabel.Text = txt -- ชื่อฟังก์ชัน MM2
-    tLabel.TextColor3 = Color3.new(0.9, 0.9, 0.9)
-    tLabel.TextSize = 16
-    tLabel.Font = Enum.Font.GothamSemibold
-    tLabel.TextXAlignment = Enum.TextXAlignment.Left
-    tLabel.BackgroundTransparency = 1
-
-    local switch = Instance.new("TextButton", tFrame)
-    switch.Size = UDim2.new(0, 50, 0, 25)
-    switch.Position = UDim2.new(0.95, -50, 0.5, -12)
-    switch.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-    switch.Text = ""
-    
-    local sCorner = Instance.new("UICorner", switch)
-    sCorner.CornerRadius = UDim.new(1, 0)
-    
-    local dot = Instance.new("Frame", switch)
-    dot.Size = UDim2.new(0, 21, 0, 21)
-    dot.Position = UDim2.new(0, 2, 0.5, -10)
-    dot.BackgroundColor3 = Color3.new(1, 1, 1)
-    Instance.new("UICorner", dot).CornerRadius = UDim.new(1, 0)
-
-    switch.MouseButton1Click:Connect(function()
-        active = not active
-        -- การเคลื่อนไหวของสีที่ได้รับแรงบันดาลใจจากข่าวล่าสุด
-        ts:Create(switch, TweenInfo.new(0.3), {BackgroundColor3 = active and Color3.fromRGB(200, 0, 0) or Color3.fromRGB(60, 60, 60)}):Play()
-        ts:Create(dot, TweenInfo.new(0.3), {Position = active and UDim2.new(1, -23, 0.5, -10) or UDim2.new(0, 2, 0.5, -10)}):Play()
-        callback(active)
-    end)
-end
-
--- [[ การรวมระบบ MM2 ]] --
-
--- [[ 1. Ghost Lag (ได้รับแรงบันดาลใจจากการเคลื่อนไหวของข่าวล่าสุด) ]] --
-addToggle("👻 ระบบ Ghost Lag V3", function(s)
-    _G.Ghost = s
-    task.spawn(function()
-        while _G.Ghost do
-            if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-                player.Character.HumanoidRootPart.Anchored = true
-                task.wait(0.05)
-                player.Character.HumanoidRootPart.Anchored = false
-            end
-            task.wait(0.12)
-        end
-    end)
-end)
-
--- [[ 2. Silent Aim ]] --
-addToggle("🔫 Silent Aim V2 (หัวฆาตกร)", function(s) _G.Aim = s end)
-run.RenderStepped:Connect(function()
-    if _G.Aim and player.Character:FindFirstChild("Gun") then
-        for _, v in pairs(game.Players:GetPlayers()) do
-            if v.Character and (v.Character:FindFirstChild("Knife") or v.Backpack:FindFirstChild("Knife")) then
-                player.Character.Gun.Handle.CFrame = CFrame.new(player.Character.Gun.Handle.Position, v.Character.Head.Position)
-            end
-        end
-    end
-end)
-
--- [[ 3. Player ESP (ได้รับแรงบันดาลใจจากสีของข่าวล่าสุด) ]] --
-addToggle("🧿 Player ESP (สีข่าว)", function(s) _G.ESP = s end)
-run.RenderStepped:Connect(function()
-    for _, v in pairs(game.Players:GetPlayers()) do
-        if v ~= player and v.Character then
-            local h = v.Character:FindFirstChild("Highlight")
-            if _G.ESP then
-                if not h then h = Instance.new("Highlight", v.Character) end
-                -- สีแดงสดสำหรับฆาตกร และสีเขียวสดสำหรับคนธรรมดา
-                h.FillColor = (v.Backpack:FindFirstChild("Knife") or v.Character:FindFirstChild("Knife")) and Color3.fromRGB(255, 0, 0) or Color3.fromRGB(0, 255, 0)
-                h.FillTransparency = 0.5
-            elseif h then h:Destroy() end
-        end
-    end
-end)
-
--- [[ 4. Speed Boost V2 ]] --
-addToggle("🏃 วิ่งเร็ว Speed V2 (x60)", function(s) 
-    if player.Character and player.Character:FindFirstChild("Humanoid") then
-        player.Character.Humanoid.WalkSpeed = (s and 60 or 16) 
-    end
-end)
-
--- [[ ปุ่มเปิดเล็กๆ (Floating Button) ]] --
-local open = Instance.new("TextButton", sg)
-open.Size = UDim2.new(0, 60, 0, 60)
-open.Position = UDim2.new(0, 20, 0.5, -30)
-open.BackgroundColor3 = Color3.fromRGB(200, 0, 0) -- สีแดงสดสไตล์ข่าวล่าสุด
-open.Text = "📜"
-open.TextSize = 30
-open.Visible = false
-open.Draggable = true
-Instance.new("UICorner", open).CornerRadius = UDim.new(1, 0)
-
--- [[ การออกแบบปุ่มปิด X และปุ่มย่อ - ที่ได้รับแรงบันดาลใจจากภาพต้นฉบับของคุณ ]] --
-local close = Instance.new("TextButton", header)
-close.Size = UDim2.new(0, 30, 0, 30)
-close.Position = UDim2.new(1, -35, 0.5, -15)
-close.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
-close.Text = "X"
-close.TextColor3 = Color3.new(1, 1, 1)
-close.Font = Enum.Font.GothamBold
-close.TextSize = 16
-Instance.new("UICorner", close).CornerRadius = UDim.new(0, 8)
-
-close.MouseButton1Click:Connect(function()
-    main.Visible = false
-    open.Visible = true
-end)
-
-local minimize = Instance.new("TextButton", header)
-minimize.Size = UDim2.new(0, 30, 0, 30)
-minimize.Position = UDim2.new(1, -70, 0.5, -15)
-minimize.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-minimize.Text = "-"
-minimize.TextColor3 = Color3.new(1, 1, 1)
-minimize.Font = Enum.Font.GothamBold
-minimize.TextSize = 16
-Instance.new("UICorner", minimize).CornerRadius = UDim.new(0, 8)
-
-minimize.MouseButton1Click:Connect(function()
-    main.Visible = false
-    open.Visible = true
-end)
-
-open.MouseButton1Click:Connect(function()
-    main.Visible = true
-    open.Visible = false
-end)
-
-print("ข่าวล่ามาแรง: CHOKUN HUB V100 BREAKING NEWS EDITION โหลดแล้ว!")
+                                                                                 local player=game:    
+                                                                        GetService("Players").LocalPlayer;local camera= 
+                                                                    workspace.CurrentCamera;local run=game:GetService(            
+                                                                "RunService");local ts=game:GetService("TweenService");local coreGui=   
+                                                            game:GetService("CoreGui");if coreGui:FindFirstChild("ChokunEliteV6") then    
+                                                          coreGui.ChokunEliteV6:Destroy();end local sg=Instance.new("ScreenGui",coreGui);sg 
+                                                        .Name="ChokunEliteV6";sg.ResetOnSpawn=false;local main=Instance.new("Frame",sg);main. 
+                                                      Size=UDim2.new(0,350,0,390);main.Position=UDim2.new(0.1,0,0.25,0);main.BackgroundColor3=  
+                                                    Color3.fromRGB(15,14,22);main.BorderSizePixel=0;main.Active=true;main.Draggable=true;local    
+                                                  mainCorner=Instance.new("UICorner",main);mainCorner.CornerRadius=UDim.new(0,16);local mainStroke= 
+                                                  Instance.new("UIStroke",main);mainStroke.Thickness=2.5;mainStroke.ApplyStrokeMode=Enum.             
+                                                ApplyStrokeMode.Border;local gradient=Instance.new("UIGradient",mainStroke);gradient.Color=             
+                                                ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(255,90,90)),ColorSequenceKeypoint.new(1,    
+                                              Color3.fromRGB(255,160,60))});local header=Instance.new("Frame",main);header.Size=UDim2.new(1,0,0,60);header. 
+                                              BackgroundTransparency=1;local title=Instance.new("TextLabel",header);title.Size=UDim2.new(1, -60,1,0);title. 
+                                            Position=UDim2.new(0.06,0,0,0);title.Text="CHOKUN HUB";title.TextColor3=Color3.fromRGB(255,255,255);title.        
+                                            TextSize=22;title.Font=Enum.Font.GothamBold;title.BackgroundTransparency=1;title.TextXAlignment=Enum.TextXAlignment 
+                                          .Left;local subTitle=Instance.new("TextLabel",header);subTitle.Size=UDim2.new(0,150,0,20);subTitle.Position=UDim2.new(  
+                                          0.06,0,0.65,0);subTitle.Text="PREMIUM EDITION V6.1";subTitle.TextColor3=Color3.fromRGB(255,130,80);subTitle.TextSize=10;  
+                                          subTitle.Font=Enum.Font.GothamBold;subTitle.BackgroundTransparency=1;subTitle.TextXAlignment=Enum.TextXAlignment.Left;local 
+                                           close=Instance.new("TextButton",header);close.Size=UDim2.new(0,35,0,35);close.Position=UDim2.new(1, -50,0.5, -17.5);close. 
+                                        BackgroundColor3=Color3.fromRGB(28,26,38);close.Text="✕";close.TextColor3=Color3.fromRGB(255,100,100);close.TextSize=16;close.  
+                                        Font=Enum.Font.GothamBold;Instance.new("UICorner",close).CornerRadius --[[==============================]]=UDim.new(0,10);local   
+                                        line=Instance.new("Frame",main);line.Size=UDim2.new(1, -40, --[[============================================]]0,1);line.Position= 
+                                        UDim2.new(0,20,0,60);line.BackgroundColor3=Color3.      --[[======================================================]]fromRGB(40,38,  
+                                      55);line.BorderSizePixel=0;local container=Instance.  --[[==========================================================]]new("Frame",main) 
+                                      ;container.Size=UDim2.new(1, -30,1, -80);container. --[[==============================================================]]Position=UDim2. 
+                                      new(0,15,0,75);container.BackgroundTransparency=1;  --[[================================================================]]local layout=   
+                                      Instance.new("UIListLayout",container);layout.      --[[==================================================================]]Padding=UDim. 
+                                      new(0,12);layout.SortOrder=Enum.SortOrder.          --[[==================================================================]]LayoutOrder;      
+                                    local function addToggle(icon,text,activeColor,       --[[====================================================================]]callback)     
+                    local active=false;local row=Instance.new("Frame",container);row.Size --[[====================================================================]]=UDim2.new(1,0, 
+              0,56);row.BackgroundColor3=Color3.fromRGB(23,21,32);row.BorderSizePixel=0;  --[[======================================================================]]Instance.new( 
+            "UICorner",row).CornerRadius=UDim.new(0,12);local rowStroke=Instance.new(     --[[======================================================================]]"UIStroke",   
+          row);rowStroke.Color=Color3.fromRGB(33,31,46);rowStroke.Thickness=1.5;local     --[[======================================================================]]label=        
+        Instance.new("TextLabel",row);label.Size=UDim2.new(0.65,0,1,0);label.Position=    --[[======================================================================]]UDim2.new(    
+        0.05,0,0,0);label.Text=icon   .. "  "   .. text ;label.TextColor3=Color3.fromRGB( --[[======================================================================]]230,230,240); 
+      label.TextSize=14;label.Font=Enum.Font.GothamSemibold;label.BackgroundTransparency= --[[======================================================================]]1;label.      
+      TextXAlignment=Enum.TextXAlignment.Left;local switch=Instance.new("TextButton",row);  --[[==================================================================]]switch.Size=    
+      UDim2.new(0,52,0,26);switch.Position=UDim2.new(1, -65,0.5, -13);switch.               --[[================================================================]]BackgroundColor3= 
+    Color3.fromRGB(45,42,60);switch.Text="";Instance.new("UICorner",switch).CornerRadius=   --[[==============================================================]]UDim.new(1,0);    
+    local ball=Instance.new("Frame",switch);ball.Size=UDim2.new(0,20,0,20);ball.Position=     --[[==========================================================]]UDim2.new(0,3,0.5,  
+    -10);ball.BackgroundColor3=Color3.new(1,1,1);Instance.new("UICorner",ball).CornerRadius=    --[[====================================================]]UDim.new(1,0);switch.   
+    MouseButton1Click:Connect(function() active= not active;ts:Create(switch,TweenInfo.new(0.2,   --[[==============================================]]Enum.EasingStyle.Quad),{  
+    BackgroundColor3=(active and activeColor) or Color3.fromRGB(45,42,60) }):Play();ts:Create(ball,   --[[====================================]]TweenInfo.new(0.2,Enum.       
+    EasingStyle.Quad),{Position=(active and UDim2.new(1, -23,0.5, -10)) or UDim2.new(0,3,0.5, -10) }):    --[[========================]]Play();callback(active);end);end      
+    addToggle("🏃","Speed Turbo (x60)",Color3.fromRGB(46,213,115),function(state) if (player.Character and player.Character:FindFirstChild("Humanoid")) then player.        
+  Character.Humanoid.WalkSpeed=(state and 60) or 16 ;end end);addToggle("🧿","Role ESP (Sheriff Blue)",Color3.fromRGB(30,144,255),function(state) _G.MM2Esp=state;run.    
+  RenderStepped:Connect(function() if _G.MM2Esp then for _,v in pairs(game.Players:GetPlayers()) do if ((v~=player) and v.Character) then local h=v.Character:          
+  FindFirstChild("Highlight");if  not h then h=Instance.new("Highlight",v.Character);end if (v.Backpack:FindFirstChild("Knife") or v.Character:FindFirstChild("Knife"))   
+  then h.FillColor=Color3.fromRGB(255,71,87);elseif (v.Backpack:FindFirstChild("Gun") or v.Character:FindFirstChild("Gun")) then h.FillColor=Color3.fromRGB(30,144,255);  
+  else h.FillColor=Color3.fromRGB(46,213,115);end h.FillTransparency=0.45;end end else for _,v in pairs(game.Players:GetPlayers()) do if (v.Character and v.Character:    
+  FindFirstChild("Highlight")) then v.Character.Highlight:Destroy();end end end end);end);addToggle("👻","Ghost Lag V3",Color3.fromRGB(245,165,65),function(state) _G.    
+  GhostActive=state;task.spawn(function() while _G.GhostActive do if (player.Character and player.Character:FindFirstChild("HumanoidRootPart")) then player.Character.    
+  HumanoidRootPart.Anchored=true;task.wait(0.04);player.Character.HumanoidRootPart.Anchored=false;end task.wait(0.1);end end);end);addToggle("🔫","Cam Lock & Aim Torso", 
+  Color3.fromRGB(255,75,160),function(state) _G.KillerAim=state;end);run.RenderStepped:Connect(function() if _G.KillerAim then for _,v in pairs(game.Players:GetPlayers() 
+  ) do if ((v~=player) and v.Character) then local torso=v.Character:FindFirstChild("UpperTorso") or v.Character:FindFirstChild("Torso") ;if torso then if (v.Backpack:   
+  FindFirstChild("Knife") or v.Character:FindFirstChild("Knife")) then camera.CFrame=CFrame.new(camera.CFrame.Position,torso.Position);if (player.Character and player.   
+  Character:FindFirstChild("Gun")) then local gun=player.Character:FindFirstChild("Gun");if gun:FindFirstChild("Handle") then gun.Handle.CFrame=CFrame.new(gun.Handle.      
+  Position,torso.Position);end end end end end end end end);local openBtn=Instance.new("TextButton",sg);openBtn.Size=UDim2.new(0,52,0,52);openBtn.Position=UDim2.new(0,25,  
+  0.5, -26);openBtn.BackgroundColor3=Color3.fromRGB(15,14,22);openBtn.Text="CH";openBtn.TextColor3=Color3.fromRGB(255,255,255);openBtn.Font=Enum.Font.GothamBold;openBtn.   
+  TextSize=16;openBtn.Visible=false;openBtn.Draggable=true;Instance.new("UICorner",openBtn).CornerRadius=UDim.new(1,0);local openStroke=Instance.new("UIStroke",openBtn);   
+  openStroke.Thickness=2;local openGradient=Instance.new("UIGradient",openStroke);openGradient.Color=ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(255,90,  
+  90)),ColorSequenceKeypoint.new(1,Color3.fromRGB(255,160,60))});close.MouseButton1Click:Connect(function() main.Visible=false;openBtn.Visible=true;end);openBtn.           
+  MouseButton1Click:Connect(function() main.Visible=true;openBtn.Visible=false;end);
