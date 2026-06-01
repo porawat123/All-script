@@ -1,0 +1,149 @@
+-- [[ 1. เช็กและลบสคริปต์ตัวเดิมเพื่อไม่ให้รันซ้อนกัน ]] --
+local oldGui = game.Players.LocalPlayer.PlayerGui:FindFirstChild("CHOKUN_UNIVERSAL_HUB")
+if oldGui then
+    oldGui:Destroy()
+end
+
+-- [[ 2. เริ่มสร้าง UI ดีไซน์ขอบกลมตามรูป image_2.png แต่เปลี่ยนเป็นโทนสีสันสดใส ไม่มืด ]] --
+local ScreenGui = Instance.new("ScreenGui")
+local MainFrame = Instance.new("Frame")
+local Title = Instance.new("TextLabel")
+local UICorner = Instance.new("UICorner")
+local StatusLabel = Instance.new("TextLabel")
+
+-- ปุ่มฟังก์ชันสำหรับใช้ได้ทุกแมพ
+local SpeedBtn = Instance.new("TextButton")
+local JumpBtn = Instance.new("TextButton")
+local BrightBtn = Instance.new("TextButton")
+
+ScreenGui.Name = "CHOKUN_UNIVERSAL_HUB"
+ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+ScreenGui.ResetOnSpawn = false
+
+-- หน้าต่างหลัก (เปลี่ยนเป็นสีครีมสว่างสดใส ขอบมนสวยงาม ไม่มืดแล้วครับ)
+MainFrame.Name = "MainFrame"
+MainFrame.Parent = ScreenGui
+MainFrame.BackgroundColor3 = Color3.fromRGB(247, 244, 235) -- สีครีมนมสดใสสว่างตา
+MainFrame.Position = UDim2.new(0.3, 0, 0.2, 0)
+MainFrame.Size = UDim2.new(0, 320, 0, 290)
+MainFrame.Active = true
+MainFrame.Draggable = true 
+
+local MainCorner = UICorner:Clone()
+MainCorner.CornerRadius = UDim.new(0, 16)
+MainCorner.Parent = MainFrame
+
+-- หัวข้อหลักด้านบน ใช้ฟอนต์ทรงมนสีชมพูบานเย็นสดใสสุด ๆ
+Title.Name = "Title"
+Title.Parent = MainFrame
+Title.BackgroundTransparency = 1
+Title.Position = UDim2.new(0, 0, 0, 15)
+Title.Size = UDim2.new(1, 0, 0, 30)
+Title.Font = Enum.Font.FredokaOne
+Title.Text = "🔮 PREMIUM UNIVERSAL HUB 🔮"
+Title.TextColor3 = Color3.fromRGB(255, 20, 147) -- สีชมพูบานเย็นสดใสเด่นชัด
+Title.TextSize = 20
+
+-- ฟังก์ชันสร้างแถวเมนูที่มีป้ายซ้าย และกล่องปุ่มขอบมนสีสันสดใส (ถอดแบบโครงสร้างจาก image_2.png)
+local function createMenuRow(labelText, boxText, posY, boxColor, textColor)
+    local label = Instance.new("TextLabel")
+    label.Parent = MainFrame
+    label.BackgroundTransparency = 1
+    label.Position = UDim2.new(0.07, 0, 0, posY)
+    label.Size = UDim2.new(0.35, 0, 0, 40)
+    label.Font = Enum.Font.FredokaOne
+    label.Text = labelText
+    label.TextColor3 = Color3.fromRGB(60, 60, 65) -- สีตัวหนังสือป้ายข้างใช้สีเข้มขึ้นเพื่อให้ตัดกับพื้นหลังครีม
+    label.TextSize = 15
+    label.TextXAlignment = Enum.TextXAlignment.Left
+
+    local box = Instance.new("TextButton")
+    box.Parent = MainFrame
+    box.BackgroundColor3 = boxColor
+    box.Position = UDim2.new(0.45, 0, 0, posY)
+    box.Size = UDim2.new(0.48, 0, 0, 40)
+    box.Font = Enum.Font.FredokaOne
+    box.Text = boxText
+    box.TextColor3 = textColor
+    box.TextSize = 14
+    
+    local BoxCorner = UICorner:Clone()
+    BoxCorner.CornerRadius = UDim.new(0, 10)
+    BoxCorner.Parent = box
+    
+    return box
+end
+
+-- สร้างปุ่มเปิด/ปิดแยกเลเยอร์สีสันพาสเทลสดใส ไม่มืดทึบ
+local SpeedRow = createMenuRow("🏃 ความเร็วตัวละคร:", "ปิดอยู่ (สปีดปกติ)", 65, Color3.fromRGB(174, 219, 242), Color3.fromRGB(40, 70, 90))     -- ฟ้าพาสเทล
+local JumpRow = createMenuRow("🦘 ระยะกระโดด:", "ปิดอยู่ (โดดปกติ)", 115, Color3.fromRGB(255, 182, 193), Color3.fromRGB(90, 40, 50))     -- ชมพูพาสเทล
+local BrightRow = createMenuRow("💡 แสนสว่างแมพ:", "ปิดอยู่ (มืดตามแมพ)", 165, Color3.fromRGB(255, 236, 139), Color3.fromRGB(80, 70, 20))   -- เหลืองเลมอนพาสเทล
+
+-- แถบแสดงสถานะด้านล่างสุด (ใช้สีน้ำเงินอมเขียวสดใสชัดๆ)
+StatusLabel.Name = "StatusLabel"
+StatusLabel.Parent = MainFrame
+StatusLabel.BackgroundTransparency = 1
+StatusLabel.Position = UDim2.new(0, 0, 0, 235)
+StatusLabel.Size = UDim2.new(1, 0, 0, 25)
+StatusLabel.Font = Enum.Font.FredokaOne
+StatusLabel.Text = "ระบบ: พร้อมใช้งานในทุกเซิร์ฟเวอร์ ✔️"
+StatusLabel.TextColor3 = Color3.fromRGB(0, 128, 128)
+StatusLabel.TextSize = 14
+
+-- [[ 3. ระบบฟังก์ชันกลาง (Universal Functions) ]] --
+local player = game.Players.LocalPlayer
+local speedToggle = false
+local jumpToggle = false
+local brightToggle = false
+
+-- ฟังก์ชันปรับแต่งสถานะปุ่มเมื่อกดเปิด (จะเปลี่ยนเป็นสีเขียวมินต์สดใสสะดุดตา)
+local function updateButtonVisual(btn, state, onText, offText, defaultColor, defaultTextColor)
+    if state then
+        btn.BackgroundColor3 = Color3.fromRGB(50, 205, 50) -- สีเขียวมะนาว/มินต์ สดใสมากเวลาเปิด
+        btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+        btn.Text = onText
+    else
+        btn.BackgroundColor3 = defaultColor -- กลับเป็นสีพาสเทลหวานๆ ตอนปิด
+        btn.TextColor3 = defaultTextColor
+        btn.Text = offText
+    end
+end
+
+-- 1. ฟังก์ชันวิ่งไว
+SpeedRow.MouseButton1Click:Connect(function()
+    speedToggle = not speedToggle
+    updateButtonVisual(SpeedRow, speedToggle, "เปิดอยู่ (วิ่งไวคูณสอง)", "ปิดอยู่ (สปีดปกติ)", Color3.fromRGB(174, 219, 242), Color3.fromRGB(40, 70, 90))
+    if player.Character and player.Character:FindFirstChild("Humanoid") then
+        player.Character.Humanoid.WalkSpeed = speedToggle and 50 or 16
+    end
+end)
+
+-- 2. ฟังก์ชันกระโดดสูง
+JumpRow.MouseButton1Click:Connect(function()
+    jumpToggle = not jumpToggle
+    updateButtonVisual(JumpRow, jumpToggle, "เปิดอยู่ (โดดสูงพิเศษ)", "ปิดอยู่ (โดดปกติ)", Color3.fromRGB(255, 182, 193), Color3.fromRGB(90, 40, 50))
+    if player.Character and player.Character:FindFirstChild("Humanoid") then
+        player.Character.Humanoid.JumpPower = jumpToggle and 100 or 50
+    end
+end)
+
+-- 3. ฟังก์ชันเปิดไฟแมพ
+BrightRow.MouseButton1Click:Connect(function()
+    brightToggle = not brightToggle
+    updateButtonVisual(BrightRow, brightToggle, "เปิดอยู่ (สว่างจ้า)", "ปิดอยู่ (มืดตามแมพ)", Color3.fromRGB(255, 236, 139), Color3.fromRGB(80, 70, 20))
+    if brightToggle then
+        game:GetService("Lighting").Brightness = 2
+        game:GetService("Lighting").ClockTime = 14
+        game:GetService("Lighting").Ambient = Color3.fromRGB(255, 255, 255)
+    else
+        game:GetService("Lighting").Brightness = 1
+    end
+end)
+
+-- [[ 4. ระบบล็อกค่าอัตโนมัติเมื่อเกิดใหม่ ]] --
+player.CharacterAdded:Connect(function(char)
+    local hum = char:WaitForChild("Humanoid")
+    task.wait(0.6)
+    if speedToggle then hum.WalkSpeed = 50 end
+    if jumpToggle then hum.JumpPower = 100 end
+end)
